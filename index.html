@@ -5,23 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1a2744">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Seizo Happy Golf 2026</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  :root{
-    --navy:#1a2744;--navy2:#243460;--gold:#c9a227;--red:#8b1f1f;--red2:#a82a2a;
-    --bg:#f4f6fa;--card:#fff;--border:#e0e4ee;--text:#1a1a2e;--muted:#6b7280;
-    --navy-light:#e8edf5;--red-light:#f5e0e0;--gold-light:#fdf6e3;
-  }
+  :root{--navy:#1a2744;--navy2:#243460;--gold:#c9a227;--red:#8b1f1f;--bg:#f4f6fa;--card:#fff;--border:#e0e4ee;--text:#1a1a2e;--muted:#6b7280;--navy-light:#e8edf5;--red-light:#f5e0e0;--gold-light:#fdf6e3}
   html,body{height:100%;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);overflow-x:hidden}
 
+  /* SYNC STATUS */
+  .sync-bar{display:flex;align-items:center;justify-content:center;gap:6px;padding:5px;font-size:11px;font-weight:600;letter-spacing:.04em;transition:all .3s}
+  .sync-bar.connected{background:#e8f5e9;color:#2e7d32}
+  .sync-bar.connecting{background:#fff8e1;color:#f57f17}
+  .sync-bar.error{background:#fce4ec;color:#c62828}
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 1.5s infinite}
+  .sync-bar.connected .sync-dot{animation:none}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
   /* HEADER */
-  .header{background:var(--navy);color:#fff;padding:14px 16px 12px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
-  .header-event{font-size:10px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-bottom:3px}
+  .header{background:var(--navy);color:#fff;padding:12px 16px 10px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+  .header-event{font-size:10px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-bottom:2px}
   .header-title{font-size:18px;font-weight:800;letter-spacing:.04em}
   .header-title span{color:var(--gold)}
-  .header-sub{font-size:11px;opacity:.7;margin-top:2px}
+  .header-sub{font-size:11px;opacity:.7;margin-top:1px}
 
   /* SCORE BAR */
   .score-bar{display:grid;grid-template-columns:1fr auto 1fr;background:var(--navy2);color:#fff;padding:10px 16px}
@@ -29,39 +33,38 @@
   .score-team-name{font-size:9px;letter-spacing:.1em;opacity:.7;text-transform:uppercase;margin-bottom:2px}
   .score-team-num{font-size:32px;font-weight:800;line-height:1}
   .score-center{text-align:center;padding:0 12px;border-left:1px solid rgba(255,255,255,.15);border-right:1px solid rgba(255,255,255,.15)}
-  .score-status{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap}
+  .score-status{font-size:12px;font-weight:700;color:var(--gold)}
   .score-sub{font-size:10px;opacity:.6;margin-top:2px}
 
   /* TABS */
-  .tabs{display:flex;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:77px;z-index:90}
-  .tab{flex:1;padding:12px 4px;text-align:center;font-size:12px;font-weight:500;color:var(--muted);border:none;background:none;border-bottom:3px solid transparent;cursor:pointer;transition:all .2s}
+  .tabs{display:flex;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:82px;z-index:90}
+  .tab{flex:1;padding:12px 4px;text-align:center;font-size:12px;font-weight:500;color:var(--muted);border:none;background:none;border-bottom:3px solid transparent;cursor:pointer}
   .tab.active{color:var(--navy);border-bottom-color:var(--navy);font-weight:700}
 
   /* HOLE NAV */
   .hole-nav{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;border-bottom:1px solid var(--border)}
-  .nav-btn{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;font-weight:600;color:var(--navy);min-width:70px}
+  .nav-btn{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer;font-weight:600;color:var(--navy);min-width:72px;text-align:center}
   .nav-btn:active{background:var(--border)}
   .hole-label{flex:1;text-align:center;font-weight:800;font-size:17px;color:var(--navy)}
-  .hole-result-pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:2px;display:inline-block}
 
   /* HOLE GRID */
-  .hole-grid-wrap{padding:12px 16px;background:#fff;border-bottom:1px solid var(--border)}
+  .hole-grid-wrap{padding:10px 16px;background:#fff;border-bottom:1px solid var(--border)}
   .hole-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:3px}
-  .hg-btn{border:1px solid var(--border);background:var(--bg);border-radius:5px;padding:6px 2px;text-align:center;cursor:pointer;font-size:11px;font-weight:500;color:var(--muted);line-height:1.3;min-height:38px;transition:all .15s}
+  .hg-btn{border:1px solid var(--border);background:var(--bg);border-radius:5px;padding:5px 2px;text-align:center;cursor:pointer;font-size:11px;font-weight:500;color:var(--muted);line-height:1.4;min-height:36px}
   .hg-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:700}
   .hg-btn.shacho{border-color:var(--navy);background:var(--navy-light);color:var(--navy)}
   .hg-btn.seizo{border-color:var(--red);background:var(--red-light);color:var(--red)}
   .hg-btn.halve{border-color:#aaa;background:#f5f5f5;color:#666}
-  .hg-sym{font-size:9px;display:block;line-height:1}
+  .hg-sym{font-size:9px;display:block}
 
   /* FLIGHTS */
   .content{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
-  .flight-card{border-radius:12px;overflow:hidden;border:1.5px solid var(--navy);box-shadow:0 1px 6px rgba(0,0,0,.08)}
+  .flight-card{border-radius:12px;overflow:hidden;border:1.5px solid var(--navy);box-shadow:0 1px 6px rgba(0,0,0,.07)}
   .flight-card.b{border-color:var(--red)}
   .flight-head{padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
   .flight-head.a{background:var(--navy)}
   .flight-head.b{background:var(--red)}
-  .flight-head-label{color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em}
+  .flight-head-label{color:#fff;font-size:12px;font-weight:700}
   .flight-head-best{color:rgba(255,255,255,.7);font-size:11px}
   .player-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border);background:#fff}
   .player-row:last-child{border-bottom:none}
@@ -69,11 +72,11 @@
   .player-avatar.a{background:var(--navy-light);color:var(--navy)}
   .player-avatar.b{background:var(--red-light);color:var(--red)}
   .player-info{flex:1;min-width:0}
-  .player-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .player-name{font-size:14px;font-weight:600}
   .player-meta{font-size:11px;color:var(--muted);margin-top:1px}
   .score-box{display:flex;align-items:center;gap:8px}
-  .score-total-badge{font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;background:var(--bg);color:var(--navy);border:1px solid var(--border)}
-  .score-input{width:52px;height:48px;text-align:center;font-size:20px;font-weight:700;border-radius:10px;border:2px solid var(--border);color:var(--text);background:#fff;-webkit-appearance:none;appearance:none}
+  .score-total-badge{font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;background:var(--bg);color:var(--navy);border:1px solid var(--border);white-space:nowrap}
+  .score-input{width:52px;height:50px;text-align:center;font-size:22px;font-weight:700;border-radius:10px;border:2px solid var(--border);color:var(--text);background:#fff}
   .score-input:focus{outline:none;border-color:var(--navy);background:var(--navy-light)}
   .score-input.b:focus{border-color:var(--red);background:var(--red-light)}
   input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
@@ -89,10 +92,10 @@
   .rules-title{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.06em;margin-bottom:6px;text-transform:uppercase}
   .rules-item{font-size:12px;color:var(--muted);margin-bottom:3px;line-height:1.5}
 
-  /* MATCH BOARD */
+  /* MATCH */
   .match-wrap{padding:12px 16px}
-  .match-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-bottom:16px}
-  .mg-cell{text-align:center;padding:8px 2px;border-radius:8px;cursor:pointer;transition:.15s}
+  .match-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-bottom:14px}
+  .mg-cell{text-align:center;padding:8px 2px;border-radius:8px;cursor:pointer}
   .mg-cell:active{transform:scale(.95)}
   .mg-num{font-size:10px;color:var(--muted);margin-bottom:2px}
   .mg-sym{font-size:18px;line-height:1}
@@ -108,11 +111,11 @@
   .hole-detail-head{padding:10px 14px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border)}
   .hole-detail-row{display:flex;align-items:center;padding:9px 14px;border-bottom:1px solid var(--border);gap:8px;font-size:13px}
   .hole-detail-row:last-child{border-bottom:none}
+  .winner-banner{background:var(--gold);color:var(--navy);padding:12px 16px;border-radius:10px;text-align:center;font-weight:800;font-size:15px;margin-top:12px}
 
-  /* LEADERBOARD */
+  /* BOARD */
   .board-wrap{padding:12px 16px}
   .board-empty{text-align:center;padding:48px 16px;color:var(--muted)}
-  .board-empty-icon{font-size:48px;margin-bottom:12px}
   .board-item{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:12px;margin-bottom:8px;border:1px solid var(--border);background:#fff}
   .board-item.rank1{background:var(--gold-light);border-color:var(--gold)}
   .board-item.rank2{background:#f9f9f9;border-color:#ddd}
@@ -128,18 +131,21 @@
   .flight-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;margin-left:4px}
   .flight-badge.a{background:var(--navy-light);color:var(--navy)}
   .flight-badge.b{background:var(--red-light);color:var(--red)}
-  .all-players-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
-  .all-players-table th{padding:8px 10px;text-align:left;color:var(--muted);font-weight:600;font-size:11px;border-bottom:1.5px solid var(--border);letter-spacing:.04em;text-transform:uppercase}
+  .sect-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin:16px 0 8px}
+  .all-players-table{width:100%;border-collapse:collapse;font-size:12px}
+  .all-players-table th{padding:8px 10px;text-align:left;color:var(--muted);font-weight:600;font-size:11px;border-bottom:1.5px solid var(--border);text-transform:uppercase}
   .all-players-table td{padding:9px 10px;border-bottom:1px solid var(--border)}
   .all-players-table tr:last-child td{border-bottom:none}
-  .sect-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin:16px 0 8px}
-
-  /* WINNER BANNER */
-  .winner-banner{background:var(--gold);color:var(--navy);padding:12px 16px;border-radius:10px;text-align:center;font-weight:800;font-size:15px;margin-top:12px}
-  .pb{padding-bottom:24px}
+  .pb{padding-bottom:28px}
 </style>
 </head>
 <body>
+
+<!-- SYNC STATUS -->
+<div class="sync-bar connecting" id="syncBar">
+  <div class="sync-dot"></div>
+  <span id="syncText">Menghubungkan ke server...</span>
+</div>
 
 <!-- HEADER -->
 <div class="header">
@@ -149,7 +155,7 @@
 </div>
 
 <!-- SCORE BAR -->
-<div class="score-bar" id="scorebar">
+<div class="score-bar">
   <div class="score-team">
     <div class="score-team-name">■ Shacho</div>
     <div class="score-team-num" id="shW">0</div>
@@ -171,23 +177,17 @@
   <button class="tab" id="tab-board" onclick="switchTab('board')">🏆 Leaderboard</button>
 </div>
 
-<!-- ====== SCORE ENTRY ====== -->
+<!-- SCORE ENTRY -->
 <div id="view-score">
-  <!-- HOLE NAV -->
   <div class="hole-nav">
     <button class="nav-btn" onclick="changeHole(-1)">◀ Prev</button>
     <div class="hole-label" id="holeLabel">Hole 1</div>
     <button class="nav-btn" onclick="changeHole(1)">Next ▶</button>
   </div>
-
-  <!-- HOLE GRID -->
   <div class="hole-grid-wrap">
     <div class="hole-grid" id="holeGrid"></div>
   </div>
-
-  <!-- FLIGHTS -->
   <div class="content">
-    <!-- Flight A -->
     <div class="flight-card">
       <div class="flight-head a">
         <span class="flight-head-label">✈ FLIGHT A — SHACHO TEAM</span>
@@ -195,8 +195,6 @@
       </div>
       <div id="flightA"></div>
     </div>
-
-    <!-- Flight B -->
     <div class="flight-card b">
       <div class="flight-head b">
         <span class="flight-head-label">✈ FLIGHT B — SEIZO TEAM</span>
@@ -205,11 +203,7 @@
       <div id="flightB"></div>
     </div>
   </div>
-
-  <!-- HOLE RESULT -->
   <div id="holeResultWrap" style="margin-top:4px"></div>
-
-  <!-- RULES -->
   <div class="rules-card">
     <div class="rules-title">General Rules</div>
     <div class="rules-item">🏌️ <b>Mulligan</b> — TEE Off Area only · 1×/9 hole (excl. Par 3)</div>
@@ -219,11 +213,11 @@
   <div class="pb"></div>
 </div>
 
-<!-- ====== MATCH BOARD ====== -->
+<!-- MATCH BOARD -->
 <div id="view-match" style="display:none">
   <div class="match-wrap">
     <div class="match-grid" id="matchGrid"></div>
-    <div style="display:flex;gap:12px;margin-bottom:16px;font-size:12px;color:var(--muted);flex-wrap:wrap">
+    <div style="display:flex;gap:12px;margin-bottom:14px;font-size:12px;color:var(--muted);flex-wrap:wrap">
       <span><b style="color:var(--navy)">■</b> Shacho Win</span>
       <span><b style="color:var(--red)">▲</b> Seizo Win</span>
       <span><b style="color:#888">○</b> Halve</span>
@@ -235,7 +229,7 @@
       <div class="match-status-sub" id="matchStatusSub">0 holes remaining</div>
       <div id="winnerBanner"></div>
     </div>
-    <div class="hole-detail" id="holeDetail">
+    <div class="hole-detail">
       <div class="hole-detail-head">Hole Detail</div>
       <div id="holeDetailRows"></div>
     </div>
@@ -243,7 +237,7 @@
   </div>
 </div>
 
-<!-- ====== LEADERBOARD ====== -->
+<!-- LEADERBOARD -->
 <div id="view-board" style="display:none">
   <div class="board-wrap">
     <div id="boardContent"></div>
@@ -255,7 +249,27 @@
   </div>
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
+// ===== FIREBASE CONFIG =====
+const firebaseConfig = {
+  apiKey: "AIzaSyBISEGSunlnJKJiX8DQUO-CDLWIawUfEGA",
+  authDomain: "golf-seizou-sachou.firebaseapp.com",
+  projectId: "golf-seizou-sachou",
+  storageBucket: "golf-seizou-sachou.firebasestorage.app",
+  messagingSenderId: "761433032922",
+  appId: "1:761433032922:web:35ccb5682e70c832b87de3",
+  databaseURL: "https://golf-seizou-sachou-default-rtdb.asia-southeast1.firebasedatabase.app"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const scoresRef = db.ref("scores");
+
+// ===== PLAYERS =====
 const PLAYERS = [
   {id:1,name:"Sato",hc:13,std:85,flight:"A",cart:"Cart #1",role:""},
   {id:2,name:"Willifar",hc:23,std:95,flight:"A",cart:"Cart #1",role:""},
@@ -268,131 +282,141 @@ const PLAYERS = [
   {id:9,name:"Alfin",hc:48,std:120,flight:"B",cart:"Cart #5",role:""},
 ];
 
-const KEY = "seizo-golf-2026";
 let scores = {};
 PLAYERS.forEach(p => { scores[p.id] = Array(18).fill(null); });
-try { const s = localStorage.getItem(KEY); if(s) scores = JSON.parse(s); } catch(e){}
 
 let hole = 1;
 let curTab = "score";
+let isWriting = false;
 
-function save() {
-  try { localStorage.setItem(KEY, JSON.stringify(scores)); } catch(e) {}
-}
-
-function getGross(id) {
-  return scores[id].reduce((a,s) => a+(s||0), 0);
-}
-function getNet(id) {
-  const g = getGross(id);
-  if(!g) return null;
-  return g - PLAYERS.find(p=>p.id===id).hc;
-}
-function getHoleResult(hi) {
-  const fA = PLAYERS.filter(p=>p.flight==="A").map(p=>scores[p.id][hi]).filter(s=>s&&s>0);
-  const fB = PLAYERS.filter(p=>p.flight==="B").map(p=>scores[p.id][hi]).filter(s=>s&&s>0);
-  if(!fA.length||!fB.length) return null;
-  const bA=Math.min(...fA), bB=Math.min(...fB);
-  if(bA<bB) return "shacho";
-  if(bB<bA) return "seizo";
-  return "halve";
+// ===== SYNC STATUS =====
+function setSyncStatus(state, msg) {
+  const bar = document.getElementById("syncBar");
+  const txt = document.getElementById("syncText");
+  bar.className = "sync-bar " + state;
+  txt.textContent = msg;
 }
 
-function changeHole(dir) {
-  const nh = hole + dir;
-  if(nh<1||nh>18) return;
-  hole = nh;
+// ===== FIREBASE LISTENER =====
+db.ref(".info/connected").on("value", snap => {
+  if(snap.val()) setSyncStatus("connected","🟢 Realtime · Skor sync ke semua HP");
+  else setSyncStatus("error","🔴 Offline · Cek koneksi internet");
+});
+
+scoresRef.on("value", snap => {
+  const data = snap.val();
+  if(data) {
+    PLAYERS.forEach(p => {
+      if(data["p"+p.id]) {
+        for(let h=0;h<18;h++) {
+          const v = data["p"+p.id]["h"+h];
+          scores[p.id][h] = (v !== undefined && v !== null) ? v : null;
+        }
+      }
+    });
+  }
+  render();
+});
+
+// ===== WRITE TO FIREBASE =====
+function updateScore(pid, hi, val) {
+  if(isWriting) return;
+  const v = val===""?null:Math.max(1,parseInt(val)||1);
+  scores[pid][hi] = v;
+  isWriting = true;
+  const path = "p"+pid+"/h"+hi;
+  if(v===null) scoresRef.child(path).remove().finally(()=>{ isWriting=false; });
+  else scoresRef.child(path).set(v).finally(()=>{ isWriting=false; });
   render();
 }
 
-function jumpHole(h) {
-  hole = h;
-  if(curTab !== "score") switchTab("score");
-  else render();
+// ===== HELPERS =====
+function getGross(id) { return scores[id].reduce((a,s)=>a+(s||0),0); }
+function getNet(id) { const g=getGross(id); return g?g-PLAYERS.find(p=>p.id===id).hc:null; }
+function getHoleResult(hi) {
+  const fA=PLAYERS.filter(p=>p.flight==="A").map(p=>scores[p.id][hi]).filter(s=>s&&s>0);
+  const fB=PLAYERS.filter(p=>p.flight==="B").map(p=>scores[p.id][hi]).filter(s=>s&&s>0);
+  if(!fA.length||!fB.length) return null;
+  const bA=Math.min(...fA),bB=Math.min(...fB);
+  return bA<bB?"shacho":bB<bA?"seizo":"halve";
 }
-
+function changeHole(dir) { const n=hole+dir; if(n>=1&&n<=18){hole=n;render();} }
+function jumpHole(h) { hole=h; if(curTab!=="score") switchTab("score"); else render(); }
 function switchTab(t) {
-  curTab = t;
-  ["score","match","board"].forEach(id => {
-    document.getElementById("view-"+id).style.display = id===t?"block":"none";
-    document.getElementById("tab-"+id).className = "tab" + (id===t?" active":"");
+  curTab=t;
+  ["score","match","board"].forEach(id=>{
+    document.getElementById("view-"+id).style.display=id===t?"block":"none";
+    document.getElementById("tab-"+id).className="tab"+(id===t?" active":"");
   });
   render();
 }
 
+// ===== RENDER =====
 function render() {
-  const hi = hole - 1;
-  const allR = Array.from({length:18},(_,i)=>getHoleResult(i));
-  const shW = allR.filter(r=>r==="shacho").length;
-  const seW = allR.filter(r=>r==="seizo").length;
-  const haC = allR.filter(r=>r==="halve").length;
-  const diff = shW - seW;
-  const played = allR.filter(Boolean).length;
+  const hi=hole-1;
+  const allR=Array.from({length:18},(_,i)=>getHoleResult(i));
+  const shW=allR.filter(r=>r==="shacho").length;
+  const seW=allR.filter(r=>r==="seizo").length;
+  const haC=allR.filter(r=>r==="halve").length;
+  const diff=shW-seW;
+  const played=allR.filter(Boolean).length;
 
-  // SCORE BAR
-  document.getElementById("shW").textContent = shW;
-  document.getElementById("seW").textContent = seW;
-  const statusEl = document.getElementById("matchStatus");
-  statusEl.textContent = diff===0?"ALL SQUARE":diff>0?`SHACHO ${diff} UP`:`SEIZO ${Math.abs(diff)} UP`;
-  statusEl.style.color = diff>0?"#7ec8ff":diff<0?"#ff9a9a":"#c9a227";
-  document.getElementById("holeCount").textContent = `${played} played · ○ ${haC}`;
+  // Score bar
+  document.getElementById("shW").textContent=shW;
+  document.getElementById("seW").textContent=seW;
+  const ms=document.getElementById("matchStatus");
+  ms.textContent=diff===0?"ALL SQUARE":diff>0?`SHACHO ${diff} UP`:`SEIZO ${Math.abs(diff)} UP`;
+  ms.style.color=diff>0?"#7ec8ff":diff<0?"#ff9a9a":"#c9a227";
+  document.getElementById("holeCount").textContent=`${played} played · ○ ${haC}`;
 
-  if(curTab==="score") renderScore(hi, allR);
-  else if(curTab==="match") renderMatch(allR, shW, seW, haC, diff, played);
-  else if(curTab==="board") renderBoard();
+  if(curTab==="score") renderScore(hi,allR);
+  else if(curTab==="match") renderMatch(allR,shW,seW,haC,diff,played);
+  else renderBoard();
 }
 
-function renderScore(hi, allR) {
-  // Hole label
-  document.getElementById("holeLabel").textContent = `Hole ${hole} / 18`;
+function renderScore(hi,allR) {
+  document.getElementById("holeLabel").textContent=`Hole ${hole} / 18`;
 
   // Hole grid
-  const hg = document.getElementById("holeGrid");
-  hg.innerHTML = "";
+  const hg=document.getElementById("holeGrid");
+  hg.innerHTML="";
   for(let h=1;h<=18;h++) {
-    const r = allR[h-1];
-    const cls = h===hole?"active":(r||"");
-    const sym = r==="shacho"?"■":r==="seizo"?"▲":r==="halve"?"○":"";
-    const btn = document.createElement("button");
-    btn.className = "hg-btn "+cls;
-    btn.innerHTML = h+(sym?`<span class="hg-sym">${sym}</span>`:"");
-    btn.onclick = () => jumpHole(h);
+    const r=allR[h-1];
+    const cls=h===hole?"active":(r||"");
+    const sym=r==="shacho"?"■":r==="seizo"?"▲":r==="halve"?"○":"";
+    const btn=document.createElement("button");
+    btn.className="hg-btn "+cls;
+    btn.innerHTML=h+(sym?`<span class="hg-sym">${sym}</span>`:"");
+    btn.onclick=()=>jumpHole(h);
     hg.appendChild(btn);
   }
 
-  // Flight A
-  const fAEl = document.getElementById("flightA");
-  fAEl.innerHTML = "";
-  const fA = PLAYERS.filter(p=>p.flight==="A");
-  const bA = Math.min(...fA.map(p=>scores[p.id][hi]||99));
-  document.getElementById("bestA").textContent = "Best: "+(bA===99?"—":bA);
-  fA.forEach(p => { fAEl.appendChild(makePlayerRow(p,hi,"a")); });
-
-  // Flight B
-  const fBEl = document.getElementById("flightB");
-  fBEl.innerHTML = "";
-  const fB = PLAYERS.filter(p=>p.flight==="B");
-  const bB = Math.min(...fB.map(p=>scores[p.id][hi]||99));
-  document.getElementById("bestB").textContent = "Best: "+(bB===99?"—":bB);
-  fB.forEach(p => { fBEl.appendChild(makePlayerRow(p,hi,"b")); });
+  // Flights
+  ["A","B"].forEach(fl => {
+    const el=document.getElementById("flight"+fl);
+    el.innerHTML="";
+    const players=PLAYERS.filter(p=>p.flight===fl);
+    const scores_=players.map(p=>scores[p.id][hi]).filter(s=>s&&s>0);
+    const best=scores_.length?Math.min(...scores_):"—";
+    document.getElementById("best"+fl).textContent="Best: "+best;
+    players.forEach(p=>el.appendChild(makePlayerRow(p,hi,fl.toLowerCase())));
+  });
 
   // Hole result
-  const holeR = getHoleResult(hi);
-  const hrWrap = document.getElementById("holeResultWrap");
+  const holeR=getHoleResult(hi);
+  const hrWrap=document.getElementById("holeResultWrap");
   if(holeR) {
-    const lbl = holeR==="shacho"?"■ SHACHO WIN":holeR==="seizo"?"▲ SEIZO WIN":"○ HALVE";
-    hrWrap.innerHTML = `<div class="hole-result-banner ${holeR}">Hole ${hole}: ${lbl}</div>`;
-  } else {
-    hrWrap.innerHTML = "";
-  }
+    const lbl=holeR==="shacho"?"■ SHACHO WIN":holeR==="seizo"?"▲ SEIZO WIN":"○ HALVE";
+    hrWrap.innerHTML=`<div class="hole-result-banner ${holeR}">Hole ${hole}: ${lbl}</div>`;
+  } else hrWrap.innerHTML="";
 }
 
-function makePlayerRow(p, hi, flight) {
-  const sc = scores[p.id][hi];
-  const tot = getGross(p.id);
-  const div = document.createElement("div");
-  div.className = "player-row";
-  div.innerHTML = `
+function makePlayerRow(p,hi,flight) {
+  const sc=scores[p.id][hi];
+  const tot=getGross(p.id);
+  const div=document.createElement("div");
+  div.className="player-row";
+  div.innerHTML=`
     <div class="player-avatar ${flight}">${p.id}</div>
     <div class="player-info">
       <div class="player-name">${p.name}${p.role?` <span style="font-size:10px;color:var(--gold);font-weight:700">${p.role}</span>`:""}</div>
@@ -400,123 +424,83 @@ function makePlayerRow(p, hi, flight) {
     </div>
     <div class="score-box">
       ${tot>0?`<div class="score-total-badge">${tot}</div>`:""}
-      <input class="score-input ${flight}" type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="20"
-        value="${sc||""}" placeholder="—"
-        oninput="updateScore(${p.id},${hi},this.value)"
-      />
+      <input class="score-input ${flight}" type="number" inputmode="numeric" pattern="[0-9]*"
+        min="1" max="20" value="${sc||""}" placeholder="—"
+        oninput="updateScore(${p.id},${hi},this.value)" />
     </div>`;
   return div;
 }
 
-function updateScore(pid, hi, val) {
-  scores[pid][hi] = val===""?null:Math.max(1,parseInt(val)||1);
-  save();
-  render();
-}
-
-function renderMatch(allR, shW, seW, haC, diff, played) {
-  // Grid
-  const mg = document.getElementById("matchGrid");
-  mg.innerHTML = "";
+function renderMatch(allR,shW,seW,haC,diff,played) {
+  const mg=document.getElementById("matchGrid");
+  mg.innerHTML="";
   for(let i=0;i<18;i++) {
-    const r = allR[i];
-    const sym = r==="shacho"?"■":r==="seizo"?"▲":r==="halve"?"○":"—";
-    const cls = r||"empty";
-    const cell = document.createElement("div");
-    cell.className = "mg-cell "+cls;
-    cell.onclick = () => jumpHole(i+1);
-    cell.innerHTML = `<div class="mg-num">${i+1}</div><div class="mg-sym">${sym}</div>`;
+    const r=allR[i];
+    const sym=r==="shacho"?"■":r==="seizo"?"▲":r==="halve"?"○":"—";
+    const cell=document.createElement("div");
+    cell.className="mg-cell "+(r||"empty");
+    cell.onclick=()=>jumpHole(i+1);
+    cell.innerHTML=`<div class="mg-num">${i+1}</div><div class="mg-sym">${sym}</div>`;
     mg.appendChild(cell);
   }
+  const statusBig=document.getElementById("matchStatusBig");
+  statusBig.textContent=diff===0?"ALL SQUARE":diff>0?`SHACHO ${diff} UP`:`SEIZO ${Math.abs(diff)} UP`;
+  statusBig.style.color=diff>0?"var(--navy)":diff<0?"var(--red)":"var(--muted)";
+  document.getElementById("matchStatusSub").textContent=`${18-played} holes remaining`;
+  const wb=document.getElementById("winnerBanner");
+  wb.innerHTML=played===18?`<div class="winner-banner">🏆 Match Complete! Winner: ${diff>0?"SHACHO TEAM":diff<0?"SEIZO TEAM":"TIE"}</div>`:"";
 
-  // Status
-  const statusBig = document.getElementById("matchStatusBig");
-  statusBig.textContent = diff===0?"ALL SQUARE":diff>0?`SHACHO ${diff} UP`:`SEIZO ${Math.abs(diff)} UP`;
-  statusBig.style.color = diff>0?"var(--navy)":diff<0?"var(--red)":"var(--muted)";
-  document.getElementById("matchStatusSub").textContent = `${18-played} holes remaining`;
-
-  // Winner
-  const wb = document.getElementById("winnerBanner");
-  if(played===18) {
-    const w = diff>0?"SHACHO TEAM 🏆":diff<0?"SEIZO TEAM 🏆":"TIE ○";
-    wb.innerHTML = `<div class="winner-banner">Match Complete! Winner: ${w}</div>`;
-  } else wb.innerHTML = "";
-
-  // Hole detail
-  const rows = document.getElementById("holeDetailRows");
-  rows.innerHTML = "";
-  let any = false;
+  const rows=document.getElementById("holeDetailRows");
+  rows.innerHTML="";
+  let any=false;
   for(let i=0;i<18;i++) {
-    const r = allR[i];
-    if(!r) continue;
-    any = true;
-    const fA = PLAYERS.filter(p=>p.flight==="A").map(p=>scores[p.id][i]).filter(s=>s&&s>0);
-    const fB = PLAYERS.filter(p=>p.flight==="B").map(p=>scores[p.id][i]).filter(s=>s&&s>0);
-    const bA = fA.length?Math.min(...fA):"—";
-    const bB = fB.length?Math.min(...fB):"—";
-    const rLabel = r==="shacho"?"■ SHACHO":r==="seizo"?"▲ SEIZO":"○ HALVE";
-    const rColor = r==="shacho"?"var(--navy)":r==="seizo"?"var(--red)":"#888";
-    const row = document.createElement("div");
-    row.className = "hole-detail-row";
-    row.innerHTML = `
-      <span style="font-weight:700;color:var(--navy);width:55px">Hole ${i+1}</span>
+    const r=allR[i]; if(!r) continue; any=true;
+    const fA=PLAYERS.filter(p=>p.flight==="A").map(p=>scores[p.id][i]).filter(s=>s&&s>0);
+    const fB=PLAYERS.filter(p=>p.flight==="B").map(p=>scores[p.id][i]).filter(s=>s&&s>0);
+    const bA=fA.length?Math.min(...fA):"—",bB=fB.length?Math.min(...fB):"—";
+    const rLabel=r==="shacho"?"■ SHACHO":r==="seizo"?"▲ SEIZO":"○ HALVE";
+    const rColor=r==="shacho"?"var(--navy)":r==="seizo"?"var(--red)":"#888";
+    const row=document.createElement("div");
+    row.className="hole-detail-row";
+    row.innerHTML=`<span style="font-weight:700;color:var(--navy);width:55px">Hole ${i+1}</span>
       <span style="color:var(--navy)">A: <b>${bA}</b></span>
       <span style="color:var(--muted);font-size:11px">vs</span>
       <span style="color:var(--red)">B: <b>${bB}</b></span>
       <span style="margin-left:auto;font-weight:700;color:${rColor};font-size:12px">${rLabel}</span>`;
     rows.appendChild(row);
   }
-  if(!any) rows.innerHTML = `<div style="padding:16px;color:var(--muted);font-size:13px;text-align:center">Belum ada hole yang selesai</div>`;
+  if(!any) rows.innerHTML=`<div style="padding:16px;color:var(--muted);text-align:center;font-size:13px">Belum ada hole selesai</div>`;
 }
 
 function renderBoard() {
-  const MEDALS = ["🥇","🥈","🥉"];
-  const lb = [...PLAYERS]
-    .map(p=>({...p, gross:getGross(p.id), net:getNet(p.id)}))
-    .filter(p=>p.gross>0)
-    .sort((a,b)=>a.gross-b.gross);
+  const MEDALS=["🥇","🥈","🥉"];
+  const lb=[...PLAYERS].map(p=>({...p,gross:getGross(p.id),net:getNet(p.id)}))
+    .filter(p=>p.gross>0).sort((a,b)=>a.gross-b.gross);
+  const bc=document.getElementById("boardContent");
+  bc.innerHTML=lb.length?lb.map((p,i)=>`
+    <div class="board-item ${i<3?'rank'+(i+1):''}">
+      ${i<3?`<div class="board-medal">${MEDALS[i]}</div>`:`<div class="board-num">${i+1}</div>`}
+      <div class="board-info">
+        <div class="board-name">${p.name}<span class="flight-badge ${p.flight.toLowerCase()}">F${p.flight}</span></div>
+        <div class="board-meta">HC ${p.hc} · ${p.cart}${p.role?" · "+p.role:""}</div>
+      </div>
+      <div class="board-score">
+        <div class="board-gross">${p.gross}</div>
+        <div class="board-net">Net ${p.net}</div>
+      </div>
+    </div>`).join(""):`<div class="board-empty"><div style="font-size:48px;margin-bottom:12px">⛳</div>Belum ada skor diinput</div>`;
 
-  const bc = document.getElementById("boardContent");
-  if(!lb.length) {
-    bc.innerHTML = `<div class="board-empty"><div class="board-empty-icon">⛳</div><div>Belum ada skor yang diinput.<br>Yuk mulai input di Score Entry!</div></div>`;
-  } else {
-    bc.innerHTML = lb.map((p,i) => {
-      const rankCls = i===0?"rank1":i===1?"rank2":i===2?"rank3":"";
-      const medal = i<3 ? `<div class="board-medal">${MEDALS[i]}</div>` : `<div class="board-num">${i+1}</div>`;
-      return `<div class="board-item ${rankCls}">
-        ${medal}
-        <div class="board-info">
-          <div class="board-name">${p.name}<span class="flight-badge ${p.flight.toLowerCase()}">F${p.flight}</span></div>
-          <div class="board-meta">HC ${p.hc} · ${p.cart}${p.role?" · "+p.role:""}</div>
-        </div>
-        <div class="board-score">
-          <div class="board-gross">${p.gross}</div>
-          <div class="board-net">Net ${p.net}</div>
-        </div>
-      </div>`;
-    }).join("");
-  }
-
-  // All players table
-  const tbl = document.getElementById("allPlayerTable");
-  tbl.innerHTML = `<thead><tr>
-    <th>#</th><th>Name</th><th>HC</th><th>Holes</th><th>Gross</th><th>Net</th>
-  </tr></thead><tbody>${PLAYERS.map(p=>{
-    const g=getGross(p.id),n=getNet(p.id);
-    const hp=scores[p.id].filter(s=>s&&s>0).length;
-    const fc=p.flight==="A"?"a":"b";
-    return `<tr>
-      <td>${p.id}</td>
-      <td><b>${p.name}</b><span class="flight-badge ${fc}" style="margin-left:4px">F${p.flight}</span></td>
-      <td>${p.hc}</td>
-      <td>${hp}/18</td>
-      <td><b>${g||"—"}</b></td>
-      <td>${n!==null?n:"—"}</td>
-    </tr>`;
-  }).join("")}</tbody>`;
+  document.getElementById("allPlayerTable").innerHTML=`
+    <thead><tr><th>#</th><th>Name</th><th>HC</th><th>Holes</th><th>Gross</th><th>Net</th></tr></thead>
+    <tbody>${PLAYERS.map(p=>{
+      const g=getGross(p.id),n=getNet(p.id),hp=scores[p.id].filter(s=>s&&s>0).length;
+      return `<tr><td>${p.id}</td>
+        <td><b>${p.name}</b><span class="flight-badge ${p.flight.toLowerCase()}" style="margin-left:4px">F${p.flight}</span></td>
+        <td>${p.hc}</td><td>${hp}/18</td>
+        <td><b>${g||"—"}</b></td><td>${n!==null?n:"—"}</td></tr>`;
+    }).join("")}</tbody>`;
 }
 
-// Init
 render();
 </script>
 </body>
